@@ -47,82 +47,79 @@ Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Mi
 * Any modern web browser with **Web Speech API** support (Google Chrome or Microsoft Edge recommended for voice synthesis).
 * A local static server or simple live server extension.
 
-### HOW TO 
 
-📖 How to Use Mindora
-1. Setting Up as a Caregiver (Daughter Anu)
-Adding & Managing Medicines:
+## 📖 How to Use Mindora
 
-Open /today or navigate to /caregiver/reminders.
+### 1. Setting Up as a Caregiver (Daughter Anu)
 
-Click the Caregiver Schedule Customizer button in the header.
+* **Adding & Managing Medicines**:
+1. Open `/today` or navigate to `/caregiver/reminders`.
+2. Click the **Caregiver Schedule Customizer** button in the header.
+3. Select **Add New Medicine**:
+* Tap quick-select time chips (e.g., *Morning*, *Afternoon*, *Night*).
+* Set frequency presets (e.g., *Once daily*, *Twice daily*) and dosage (e.g., *1 Tablet*).
+* Add simple instructions (e.g., *"Take after breakfast with warm water"*).
 
-Select Add New Medicine:
 
-Tap quick-select time chips (e.g., Morning, Afternoon, Night).
+4. Click **Save**. To make rapid adjustments later, click the inline ✏️ **pencil icon** on any medicine card directly.
 
-Set frequency presets (e.g., Once daily, Twice daily) and dosage (e.g., 1 Tablet).
 
-Add simple instructions (e.g., "Take after breakfast with warm water").
+* **Curating the Memory Library**:
+1. Go to `/memory` or `/caregiver/memories` and click **Add Memory**.
+2. Select a category: **People**, **Places**, **Things**, or **Moments**.
+3. Upload/link a portrait or image, specify the relationship (e.g., *"Grandchild"*), and add a short reassurance note.
+4. Record or attach an audio greeting clip so Amma can hear familiar voices during games.
 
-Click Save. To make rapid adjustments later, click the inline ✏️ pencil icon on any medicine card directly.
 
-Curating the Memory Library:
+* **Tracking Cognitive Trends & Adjusting Difficulty**:
+1. Visit `/caregiver/activity` to view Amma's 7-day cognitive trend line, accuracy %, and response times.
+2. Adjust the **Adaptive Difficulty Engine** slider (*Gentle*, *Moderate*, or *Challenging*) to match her current focus levels.
 
-Go to /memory or /caregiver/memories and click Add Memory.
 
-Select a category: People, Places, Things, or Moments.
 
-Upload/link a portrait or image, specify the relationship (e.g., "Grandchild"), and add a short reassurance note.
+---
 
-Record or attach an audio greeting clip so Amma can hear familiar voices during games.
+### 2. Daily Routine for the Patient (Amma)
 
-Tracking Cognitive Trends & Adjusting Difficulty:
+* **Checking In & Taking Medicines**:
+1. Open `/patient` to view the warm greeting (*"Namaste Amma"*), current date, and time.
+2. Head to `/today`:
+* Look at the **Medicines & Health** list.
+* When a pill is taken, tap the large **Mark Taken** button (switches to a soothing green **Taken** state).
+* Tap **Start Activity** on routine cards (e.g., walks, tea, rest) to follow daily habits.
 
-Visit /caregiver/activity to view Amma's 7-day cognitive trend line, accuracy %, and response times.
 
-Adjust the Adaptive Difficulty Engine slider (Gentle, Moderate, or Challenging) to match her current focus levels.
 
-2. Daily Routine for the Patient (Amma)
-Checking In & Taking Medicines:
 
-Open /patient to view the warm greeting ("Namaste Amma"), current date, and time.
+* **Talking with TalkBot (Voice Assistant)**:
+1. Tap the **Floating Microphone** icon in the bottom corner of any page (or go to `/talk`).
+2. Speak naturally:
+* *"What are my medicines today?"* → TalkBot reads out the scheduled medicines, times, and dosages.
+* *"Remind me to drink water at 4 PM"* → TalkBot schedules the reminder directly into the routine.
+* *"How did I do in my games today?"* → TalkBot offers an encouraging audio summary of recent activity.
 
-Head to /today:
 
-Look at the Medicines & Health list.
 
-When a pill is taken, tap the large Mark Taken button (switches to a soothing green Taken state).
 
-Tap Start Activity on routine cards (e.g., walks, tea, rest) to follow daily habits.
+* **Playing Cognitive Games**:
+1. Navigate to `/play` and choose a game:
+* **Who’s Speaking?**: Tap the audio button to hear a family member's voice, then tap their portrait to identify them.
+* **Who Is This?**: Look at the family portrait and select the matching name using the helpful relationship hints.
+* **Memory Match**: Tap cards to find matching pairs of culturally familiar items like Sewali flowers, prayer bells, and tea kettles.
 
-Talking with TalkBot (Voice Assistant):
 
-Tap the Floating Microphone icon in the bottom corner of any page (or go to /talk).
 
-Speak naturally:
 
-"What are my medicines today?" → TalkBot reads out the scheduled medicines, times, and dosages.
 
-"Remind me to drink water at 4 PM" → TalkBot schedules the reminder directly into the routine.
+---
 
-"How did I do in my games today?" → TalkBot offers an encouraging audio summary of recent activity.
+## 🛠️ Tech Stack
 
-Playing Cognitive Games:
+* **Frontend**: Vanilla HTML5, Modern CSS3, JavaScript (ES6+)
+* **Speech Engine**: Native Web Speech API (`SpeechRecognition` & `SpeechSynthesis`)
+* **State Management**: Reactive local client store via `storage.js`
+* **Audio System**: Soft ambient feedback and chime cues via `sound.js`
 
-Navigate to /play and choose a game:
+```
 
-Who’s Speaking?: Tap the audio button to hear a family member's voice, then tap their portrait to identify them.
-
-Who Is This?: Look at the family portrait and select the matching name using the helpful relationship hints.
-
-Memory Match: Tap cards to find matching pairs of culturally familiar items like Sewali flowers, prayer bells, and tea kettles.
-
-🛠️ Tech Stack
-Frontend: Vanilla HTML5, Modern CSS3, JavaScript (ES6+)
-
-Speech Engine: Native Web Speech API (SpeechRecognition & SpeechSynthesis)
-
-State Management: Reactive local client store via storage.js
-
-Audio System: Soft ambient feedback and chime cues via sound.js
+```
