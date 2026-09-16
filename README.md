@@ -1,4 +1,4 @@
-# 🌸 Smriti (স্মৃতি) — Gentle Cognitive Care & Memory Companion
+# 🧠 Mindora — Gentle Cognitive Care & Memory Companion
 
 > A compassionate, culturally grounded web companion designed to support individuals living with early-to-moderate dementia, foster neuroplasticity, and ease daily coordination for family caregivers.
 
@@ -6,7 +6,7 @@
 
 ## 💡 About the Project
 
-Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Smriti** bridges memory rehabilitation with daily routine management. Built with culturally resonant motifs (rooted in North-Eastern & Assamese traditions like Sewali flowers, prayer bells, and Gamosa looms), it creates a calming digital sanctuary for elders ("Amma") while giving family caregivers ("Anu") clear visibility into cognitive well-being.
+Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Mindora** bridges memory rehabilitation with daily routine management. Built with culturally resonant motifs (rooted in North-Eastern & Assamese traditions like Sewali flowers, prayer bells, and Gamosa looms), it creates a calming digital sanctuary for elders ("Amma") while giving family caregivers ("Anu") clear visibility into cognitive well-being.
 
 ---
 
@@ -50,5 +50,5 @@ Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Sm
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-   cd your-repo-name
+   git clone [https://github.com/your-username/mindora.git](https://github.com/your-username/mindora.git)
+   cd mindora
