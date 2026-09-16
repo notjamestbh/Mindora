@@ -18,6 +18,7 @@ import { playFlipSound } from '../../utils/sound';
 import { getPatient, getReminders, getMemories, getSettings } from '../../utils/storage';
 import { recommendActivity } from '../../utils/adaptiveEngine';
 import { getTranslation } from '../../data/translations';
+import { useStorageListener } from '../../hooks/useStorageListener';
 import './PatientHome.css';
 
 export default function PatientHome() {
@@ -26,6 +27,11 @@ export default function PatientHome() {
   const [recommendation, setRecommendation] = useState(recommendActivity());
   const settings = getSettings();
   const t = getTranslation(settings.language || 'en');
+
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_patient') setPatient(getPatient());
+    if (detail && detail.key === 'mindora_reminders') setReminders(getReminders());
+  });
 
   // Time-aware greeting & scenery icon
   const getGreetingData = () => {

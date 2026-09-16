@@ -1,5 +1,5 @@
 // Speech synthesis & recognition utilities for Mindora
-import { getReminders, getMemories, getPatient } from './storage';
+import { getReminders, getMemories, getPatient, addMemory, deleteMemory, editMemory, addReminder, deleteReminder, editReminder } from './storage';
 import { generateSpokenStatsSummary, getFullStatsSummary } from './statsSummary';
 
 /**
@@ -81,6 +81,83 @@ export const getAssistantResponse = (userQuery) => {
   const reminders = getReminders();
   const memories = getMemories();
   const patient = getPatient();
+
+  // --- MUTATIVE ACTIONS ---
+
+  // 1. Add Memory
+  const addMemoryMatch = query.match(/add (?:a )?memory (?:of|for) (.+)/i);
+  if (addMemoryMatch) {
+    const name = addMemoryMatch[1].trim();
+    // basic capitalization
+    const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+    addMemory({
+      name: formattedName,
+      category: 'people',
+      relation: 'Added via Voice',
+      description: `A new memory of ${formattedName} added by voice assistant.`,
+      avatarUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80' // default tea hills
+    });
+    return {
+      text: `I have added a new memory for ${formattedName}. It is now in your memory library.`,
+      action: "/memory"
+    };
+  }
+
+  // 2. Delete Memory
+  const deleteMemoryMatch = query.match(/(?:remove|delete) memory (?:of|for) (.+)/i);
+  if (deleteMemoryMatch) {
+    const name = deleteMemoryMatch[1].trim();
+    const mem = memories.find(m => m.name.toLowerCase() === name);
+    if (mem) {
+      deleteMemory(mem.id);
+      return { text: `I have removed the memory for ${mem.name}.`, action: "/memory" };
+    }
+    return { text: `I couldn't find a memory for ${name} to remove.`, action: "/memory" };
+  }
+
+  // 3. Add Reminder
+  const addReminderMatch = query.match(/(?:add reminder for|remind me to) (.+) at (.+)/i);
+  if (addReminderMatch) {
+    const title = addReminderMatch[1].trim();
+    const time = addReminderMatch[2].trim();
+    addReminder({
+      title: title.charAt(0).toUpperCase() + title.slice(1),
+      time: time.toUpperCase(), // basic am/pm capitalization
+      category: title.includes('pill') || title.includes('medicine') ? 'medication' : 'wellness',
+      notes: 'Added by voice request.'
+    });
+    return {
+      text: `I have added a reminder to ${title} at ${time}.`,
+      action: "/today"
+    };
+  }
+
+  // 4. Edit Reminder Time
+  const editReminderMatch = query.match(/change (.+) time to (.+)/i);
+  if (editReminderMatch) {
+    const title = editReminderMatch[1].trim();
+    const time = editReminderMatch[2].trim();
+    const rem = reminders.find(r => r.title.toLowerCase().includes(title));
+    if (rem) {
+      editReminder(rem.id, { time: time.toUpperCase() });
+      return { text: `I have changed the time for ${rem.title} to ${time}.`, action: "/today" };
+    }
+    return { text: `I couldn't find a routine matching ${title}.`, action: "/today" };
+  }
+
+  // 5. Delete Reminder
+  const deleteReminderMatch = query.match(/(?:remove|delete) (.+) reminder/i);
+  if (deleteReminderMatch) {
+    const title = deleteReminderMatch[1].trim();
+    const rem = reminders.find(r => r.title.toLowerCase().includes(title));
+    if (rem) {
+      deleteReminder(rem.id);
+      return { text: `I have removed the reminder for ${rem.title}.`, action: "/today" };
+    }
+    return { text: `I couldn't find a reminder for ${title} to remove.`, action: "/today" };
+  }
+
+  // --- READ ACTIONS ---
 
   // 0. Stats Summarization (Games, Routines, Cognitive Health)
   if (
@@ -179,10 +256,28 @@ export const getAssistantResponse = (userQuery) => {
     };
   }
 
+  // 7.5 Voice game / Who's speaking / Recognize voice
+  if (
+    query.includes('voice') ||
+    query.includes('speaking') ||
+    query.includes('whose voice') ||
+    query.includes('who is speaking') ||
+    query.includes('hear anu') ||
+    query.includes('hear arun') ||
+    query.includes('hear maya') ||
+    query.includes('hear ravi')
+  ) {
+    return {
+      text: "Let's play 'Who's Speaking?'! You can listen to familiar voices of your loved ones and recognize who is talking.",
+      action: "/game/whos-speaking",
+      actionLabel: "Play Who's Speaking"
+    };
+  }
+
   // 8. Play game / activity
   if (query.includes('play') || query.includes('game') || query.includes('activity') || query.includes('exercise')) {
     return {
-      text: "Let's play an activity! Memory Match and 'Who Is This?' are ready for you right now.",
+      text: "Let's play an activity! 'Who's Speaking?', Memory Match and 'Who Is This?' are ready for you right now.",
       action: "/play"
     };
   }

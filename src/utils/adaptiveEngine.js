@@ -88,6 +88,7 @@ export const recommendActivity = () => {
 
   // Rotate between games with emphasis on personal memory
   const allGameTypes = [
+    { type: "whos-speaking", path: "/game/whos-speaking", title: "Who's Speaking?", desc: "Familiar voice recognition" },
     { type: "who-is-this", path: "/game/who-is-this", title: "Who Is This?", desc: "Familiar family faces" },
     { type: "memory-match", path: "/game/memory-match", title: "Memory Match", desc: "Gentle card matching" },
     { type: "pattern", path: "/game/pattern", title: "Pattern Recall", desc: "Visual shape sequence" },
@@ -97,9 +98,9 @@ export const recommendActivity = () => {
 
   if (!acts || acts.length === 0) {
     return {
-      game: allGameTypes[1], // Start with Memory Match
+      game: allGameTypes[0], // Start with Who's Speaking
       difficulty: diff.difficulty,
-      reason: "A gentle visual activity to start the day"
+      reason: "A gentle auditory recognition activity with family voices"
     };
   }
 
@@ -126,7 +127,7 @@ export const getCaregiverInsights = () => {
   const insights = [];
 
   // Memory activity consistency
-  const memoryActs = acts.filter(a => a.type === 'memory-match' || a.type === 'who-is-this');
+  const memoryActs = acts.filter(a => a.type === 'memory-match' || a.type === 'who-is-this' || a.type === 'whos-speaking');
   if (memoryActs.length >= 2) {
     insights.push({
       category: "Memory",

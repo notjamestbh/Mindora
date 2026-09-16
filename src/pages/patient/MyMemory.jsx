@@ -8,12 +8,17 @@ import {
   Volume2,
   X,
   Check,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Mic,
+  Radio
 } from 'lucide-react';
 import { getMemories, addMemory } from '../../utils/storage';
 import { playFlipSound, playSuccessChime } from '../../utils/sound';
 import { speakText } from '../../utils/speech';
+import { playPersonVoice, stopAllVoices } from '../../utils/voicePlayer';
 import ImageUploadBox from '../../components/common/ImageUploadBox';
+import VoiceRecorderBox from '../../components/common/VoiceRecorderBox';
+import { useStorageListener } from '../../hooks/useStorageListener';
 import './MyMemory.css';
 
 const SAMPLE_AVATARS = [
@@ -32,13 +37,25 @@ export default function MyMemory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saveSuccessNotice, setSaveSuccessNotice] = useState(null);
 
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_memories') {
+      setMemories(getMemories());
+    }
+  });
+
+  const [activeVoicePlayingId, setActiveVoicePlayingId] = useState(null);
+
   // Form State
   const [formData, setFormData] = useState({
     name: '',
     category: 'people',
     relation: '',
     description: '',
-    avatarUrl: SAMPLE_AVATARS[0].url
+    avatarUrl: SAMPLE_AVATARS[0].url,
+    voiceAudioUrl: '',
+    voiceGreeting: '',
+    voiceProfile: 'daughter',
+    voicePitch: 1.15
   });
 
   const categories = [
@@ -60,6 +77,7 @@ export default function MyMemory() {
 
   const handleCloseModal = () => {
     playFlipSound();
+    stopAllVoices();
     setIsModalOpen(false);
   };
 
@@ -74,6 +92,21 @@ export default function MyMemory() {
     speakText(narration);
   };
 
+  const handlePlayVoice = (mem) => {
+    playFlipSound();
+    if (activeVoicePlayingId === mem.id) {
+      stopAllVoices();
+      setActiveVoicePlayingId(null);
+    } else {
+      setActiveVoicePlayingId(mem.id);
+      playPersonVoice(mem, {
+        onStart: () => setActiveVoicePlayingId(mem.id),
+        onEnd: () => setActiveVoicePlayingId(null),
+        onError: () => setActiveVoicePlayingId(null)
+      });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name.trim()) return;
@@ -86,7 +119,11 @@ export default function MyMemory() {
       relation: formData.relation.trim() || 'Family Member',
       description: formData.description.trim() || 'A cherished memory in our family circle.',
       avatarUrl: formData.avatarUrl,
-      hint: formData.relation.trim() || formData.name.trim()
+      hint: formData.relation.trim() || formData.name.trim(),
+      voiceAudioUrl: formData.voiceAudioUrl || '',
+      voiceGreeting: formData.voiceGreeting || '',
+      voiceProfile: formData.voiceProfile || 'daughter',
+      voicePitch: formData.voicePitch || 1.0
     };
 
     const updated = addMemory(newEntry);
@@ -97,10 +134,14 @@ export default function MyMemory() {
       category: 'people',
       relation: '',
       description: '',
-      avatarUrl: SAMPLE_AVATARS[0].url
+      avatarUrl: SAMPLE_AVATARS[0].url,
+      voiceAudioUrl: '',
+      voiceGreeting: '',
+      voiceProfile: 'daughter',
+      voicePitch: 1.15
     });
 
-    setSaveSuccessNotice(`"${newEntry.name}" added to memories! Now available in "Who Is This?".`);
+    setSaveSuccessNotice(`"${newEntry.name}" added to memories! Voice clip ready for "Who's Speaking?".`);
     setTimeout(() => setSaveSuccessNotice(null), 4000);
   };
 
@@ -182,22 +223,43 @@ export default function MyMemory() {
                 {mem.relation && (
                   <span className="memory-relation-badge">{mem.relation}</span>
                 )}
+                {(mem.type === 'person' || mem.category === 'people') && (mem.voiceAudioUrl || mem.voiceGreeting) && (
+                  <span className="memory-voice-indicator" title="Voice clip available">
+                    <Mic size={11} />
+                    <span>Voice</span>
+                  </span>
+                )}
               </div>
 
               <div className="memory-card-content">
                 <div className="memory-title-row">
                   <h3 className="memory-name">{mem.name}</h3>
-                  <button
-                    className="speak-card-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSpeakMemory(mem);
-                    }}
-                    title="Read memory aloud"
-                    aria-label={`Read ${mem.name} aloud`}
-                  >
-                    <Volume2 size={16} />
-                  </button>
+                  <div className="card-btn-group">
+                    {(mem.type === 'person' || mem.category === 'people') && (
+                      <button
+                        className={`voice-card-btn ${activeVoicePlayingId === mem.id ? 'playing' : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePlayVoice(mem);
+                        }}
+                        title={`Listen to ${mem.name}'s voice`}
+                        aria-label={`Listen to ${mem.name}'s voice`}
+                      >
+                        <Mic size={15} />
+                      </button>
+                    )}
+                    <button
+                      className="speak-card-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSpeakMemory(mem);
+                      }}
+                      title="Read memory aloud"
+                      aria-label={`Read ${mem.name} aloud`}
+                    >
+                      <Volume2 size={16} />
+                    </button>
+                  </div>
                 </div>
                 <p className="memory-desc-snippet">{mem.description}</p>
               </div>
@@ -208,9 +270,9 @@ export default function MyMemory() {
 
       {/* Memory Detail Modal */}
       {selectedMemory && (
-        <div className="modal-backdrop animate-fade-in" onClick={() => setSelectedMemory(null)}>
+        <div className="modal-backdrop animate-fade-in" onClick={() => { stopAllVoices(); setSelectedMemory(null); }}>
           <div className="memory-detail-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={() => setSelectedMemory(null)} aria-label="Close modal">
+            <button className="modal-close-btn" onClick={() => { stopAllVoices(); setSelectedMemory(null); }} aria-label="Close modal">
               <X size={20} />
             </button>
 
@@ -227,15 +289,43 @@ export default function MyMemory() {
                   )}
                 </div>
 
-                <button
-                  className="modal-audio-btn"
-                  onClick={() => handleSpeakMemory(selectedMemory)}
-                  aria-label="Listen to memory"
-                >
-                  <Volume2 size={20} />
-                  <span>Listen</span>
-                </button>
+                <div className="modal-actions-right">
+                  <button
+                    className="modal-audio-btn"
+                    onClick={() => handleSpeakMemory(selectedMemory)}
+                    aria-label="Listen to memory description"
+                  >
+                    <Volume2 size={18} />
+                    <span>Story</span>
+                  </button>
+                </div>
               </div>
+
+              {(selectedMemory.type === 'person' || selectedMemory.category === 'people') && (
+                <div className="modal-voice-banner">
+                  <div className="voice-banner-left">
+                    <div className="voice-icon-pulse">
+                      <Mic size={18} />
+                    </div>
+                    <div>
+                      <span className="voice-banner-title">{selectedMemory.name}'s Voice</span>
+                      <p className="voice-banner-sub">
+                        {selectedMemory.voiceGreeting
+                          ? `"${selectedMemory.voiceGreeting.slice(0, 65)}..."`
+                          : "Listen to familiar greeting & voice clip."}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className={`modal-voice-play-btn ${activeVoicePlayingId === selectedMemory.id ? 'playing' : ''}`}
+                    onClick={() => handlePlayVoice(selectedMemory)}
+                  >
+                    <Volume2 size={16} />
+                    <span>{activeVoicePlayingId === selectedMemory.id ? 'Stop' : 'Play Voice'}</span>
+                  </button>
+                </div>
+              )}
 
               <p className="modal-mem-text">{selectedMemory.description}</p>
             </div>
@@ -312,6 +402,22 @@ export default function MyMemory() {
                   placeholder="Upload family photo, moment, or place from your device"
                 />
               </div>
+
+              {formData.category === 'people' && (
+                <div className="form-group">
+                  <VoiceRecorderBox
+                    audioUrl={formData.voiceAudioUrl}
+                    onAudioChange={(url) => setFormData({ ...formData, voiceAudioUrl: url })}
+                    greeting={formData.voiceGreeting}
+                    onGreetingChange={(text) => setFormData({ ...formData, voiceGreeting: text })}
+                    profile={formData.voiceProfile}
+                    onProfileChange={(prof) => setFormData({ ...formData, voiceProfile: prof })}
+                    pitch={formData.voicePitch}
+                    onPitchChange={(p) => setFormData({ ...formData, voicePitch: p })}
+                    personName={formData.name || 'Loved One'}
+                  />
+                </div>
+              )}
 
               <div className="form-actions">
                 <button type="button" className="btn-secondary" onClick={handleCloseModal}>

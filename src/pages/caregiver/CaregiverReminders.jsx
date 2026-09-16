@@ -15,12 +15,19 @@ import {
 } from 'lucide-react';
 import { getReminders, saveReminders, addReminder, toggleReminder } from '../../utils/storage';
 import { playFlipSound, playSuccessChime } from '../../utils/sound';
+import { useStorageListener } from '../../hooks/useStorageListener';
 import './CaregiverReminders.css';
 
 export default function CaregiverReminders() {
   const [reminders, setReminders] = useState(getReminders());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notice, setNotice] = useState(null);
+
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_reminders') {
+      setReminders(getReminders());
+    }
+  });
 
   const [formData, setFormData] = useState({
     title: '',

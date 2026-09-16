@@ -13,10 +13,17 @@ import {
 } from 'lucide-react';
 import { getReminders, toggleReminder } from '../../utils/storage';
 import { playSuccessChime, playFlipSound } from '../../utils/sound';
+import { useStorageListener } from '../../hooks/useStorageListener';
 import './TodayRoutine.css';
 
 export default function TodayRoutine() {
   const [reminders, setReminders] = useState(getReminders());
+
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_reminders') {
+      setReminders(getReminders());
+    }
+  });
 
   const handleToggle = (id) => {
     playFlipSound();

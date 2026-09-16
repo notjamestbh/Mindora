@@ -22,6 +22,7 @@ import WhoIsThis from './games/WhoIsThis';
 import PatternRecall from './games/PatternRecall';
 import RoutineSequence from './games/RoutineSequence';
 import FindThePair from './games/FindThePair';
+import WhosSpeaking from './games/WhosSpeaking';
 
 // Caregiver Pages
 import CaregiverOverview from './pages/caregiver/CaregiverOverview';
@@ -68,6 +69,7 @@ export default function App() {
           {/* Games */}
           <Route path="/game/memory-match" element={<MemoryMatch />} />
           <Route path="/game/who-is-this" element={<WhoIsThis />} />
+          <Route path="/game/whos-speaking" element={<WhosSpeaking />} />
           <Route path="/game/pattern" element={<PatternRecall />} />
           <Route path="/game/routine" element={<RoutineSequence />} />
           <Route path="/game/pair" element={<FindThePair />} />

@@ -16,13 +16,19 @@ import TrendChart from '../../components/caregiver/TrendChart';
 import { getActivities, getReminders, getAlerts, dismissAlert } from '../../utils/storage';
 import { getCaregiverInsights } from '../../utils/adaptiveEngine';
 import { playFlipSound } from '../../utils/sound';
+import { useStorageListener } from '../../hooks/useStorageListener';
 import './CaregiverOverview.css';
 
 export default function CaregiverOverview() {
-  const [activities] = useState(getActivities());
-  const [reminders] = useState(getReminders());
+  const [activities, setActivities] = useState(getActivities());
+  const [reminders, setReminders] = useState(getReminders());
   const [alerts, setAlerts] = useState(getAlerts());
   const insights = getCaregiverInsights();
+
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_activities') setActivities(getActivities());
+    if (detail && detail.key === 'mindora_reminders') setReminders(getReminders());
+  });
 
   const handleDismiss = (id) => {
     playFlipSound();

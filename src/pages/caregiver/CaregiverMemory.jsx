@@ -8,11 +8,16 @@ import {
   Sparkles,
   Check,
   X,
-  Info
+  Info,
+  Volume2,
+  Mic
 } from 'lucide-react';
 import { getMemories, addMemory, deleteMemory } from '../../utils/storage';
 import { playFlipSound, playSuccessChime } from '../../utils/sound';
+import { playPersonVoice, stopAllVoices } from '../../utils/voicePlayer';
 import ImageUploadBox from '../../components/common/ImageUploadBox';
+import VoiceRecorderBox from '../../components/common/VoiceRecorderBox';
+import { useStorageListener } from '../../hooks/useStorageListener';
 import './CaregiverMemory.css';
 
 const SAMPLE_OPTIONS = [
@@ -29,13 +34,24 @@ export default function CaregiverMemory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [presetCategory, setPresetCategory] = useState('people');
   const [feedbackNotice, setFeedbackNotice] = useState(null);
+  const [playingVoiceId, setPlayingVoiceId] = useState(null);
+
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_memories') {
+      setMemories(getMemories());
+    }
+  });
 
   const [formData, setFormData] = useState({
     name: '',
     category: 'people',
     relation: '',
     description: '',
-    avatarUrl: SAMPLE_OPTIONS[0].url
+    avatarUrl: SAMPLE_OPTIONS[0].url,
+    voiceAudioUrl: '',
+    voiceGreeting: '',
+    voiceProfile: 'daughter',
+    voicePitch: 1.15
   });
 
   const handleOpenAdd = (cat = 'people') => {
@@ -46,16 +62,36 @@ export default function CaregiverMemory() {
       category: cat,
       relation: cat === 'people' ? 'Family Member' : cat === 'places' ? 'Familiar Place' : 'Household Object',
       description: '',
-      avatarUrl: SAMPLE_OPTIONS[0].url
+      avatarUrl: SAMPLE_OPTIONS[0].url,
+      voiceAudioUrl: '',
+      voiceGreeting: '',
+      voiceProfile: 'daughter',
+      voicePitch: 1.15
     });
     setIsModalOpen(true);
   };
 
   const handleDelete = (id, name) => {
     playFlipSound();
+    stopAllVoices();
     if (window.confirm(`Remove "${name}" from memory library?`)) {
       const updated = deleteMemory(id);
       setMemories([...updated]);
+    }
+  };
+
+  const handlePlayVoice = (mem) => {
+    playFlipSound();
+    if (playingVoiceId === mem.id) {
+      stopAllVoices();
+      setPlayingVoiceId(null);
+    } else {
+      setPlayingVoiceId(mem.id);
+      playPersonVoice(mem, {
+        onStart: () => setPlayingVoiceId(mem.id),
+        onEnd: () => setPlayingVoiceId(null),
+        onError: () => setPlayingVoiceId(null)
+      });
     }
   };
 
@@ -71,14 +107,18 @@ export default function CaregiverMemory() {
       relation: formData.relation.trim() || 'Family',
       description: formData.description.trim() || 'A familiar memory.',
       avatarUrl: formData.avatarUrl,
-      hint: formData.relation.trim()
+      hint: formData.relation.trim(),
+      voiceAudioUrl: formData.voiceAudioUrl || '',
+      voiceGreeting: formData.voiceGreeting || '',
+      voiceProfile: formData.voiceProfile || 'daughter',
+      voicePitch: formData.voicePitch || 1.0
     };
 
     const updated = addMemory(newMem);
     setMemories([...updated]);
     setIsModalOpen(false);
 
-    setFeedbackNotice(`Added "${newMem.name}". It is now immediately ready in patient games like "Who Is This?".`);
+    setFeedbackNotice(`Added "${newMem.name}". Voice clip and photo are now ready in patient games like "Who's Speaking?".`);
     setTimeout(() => setFeedbackNotice(null), 4500);
   };
 
@@ -134,19 +174,38 @@ export default function CaregiverMemory() {
               <span className={`cg-category-tag ${mem.category || mem.type}`}>
                 {mem.category || mem.type}
               </span>
+              {(mem.type === 'person' || mem.category === 'people') && (mem.voiceAudioUrl || mem.voiceGreeting) && (
+                <span className="cg-voice-tag" title="Voice clip attached">
+                  <Mic size={11} />
+                  <span>Voice</span>
+                </span>
+              )}
             </div>
 
             <div className="cg-memory-body">
               <div className="cg-title-row">
                 <h3 className="cg-name">{mem.name}</h3>
-                <button
-                  className="delete-mem-btn"
-                  onClick={() => handleDelete(mem.id, mem.name)}
-                  title="Remove from memory library"
-                  aria-label={`Remove ${mem.name}`}
-                >
-                  <Trash2 size={16} />
-                </button>
+                <div className="cg-card-actions">
+                  {(mem.type === 'person' || mem.category === 'people') && (
+                    <button
+                      type="button"
+                      className={`cg-voice-play-btn ${playingVoiceId === mem.id ? 'playing' : ''}`}
+                      onClick={() => handlePlayVoice(mem)}
+                      title={playingVoiceId === mem.id ? "Stop voice" : `Listen to ${mem.name}'s voice`}
+                      aria-label={`Listen to ${mem.name}'s voice`}
+                    >
+                      <Volume2 size={15} />
+                    </button>
+                  )}
+                  <button
+                    className="delete-mem-btn"
+                    onClick={() => handleDelete(mem.id, mem.name)}
+                    title="Remove from memory library"
+                    aria-label={`Remove ${mem.name}`}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
 
               {mem.relation && <span className="cg-relation">{mem.relation}</span>}
@@ -158,11 +217,11 @@ export default function CaregiverMemory() {
 
       {/* Modal for adding */}
       {isModalOpen && (
-        <div className="modal-backdrop animate-fade-in" onClick={() => setIsModalOpen(false)}>
+        <div className="modal-backdrop animate-fade-in" onClick={() => { stopAllVoices(); setIsModalOpen(false); }}>
           <div className="cg-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-heading">Add to Memory Library</h2>
-              <button className="modal-close-btn" onClick={() => setIsModalOpen(false)} aria-label="Close modal">
+              <button className="modal-close-btn" onClick={() => { stopAllVoices(); setIsModalOpen(false); }} aria-label="Close modal">
                 <X size={20} />
               </button>
             </div>
@@ -226,8 +285,24 @@ export default function CaregiverMemory() {
                 />
               </div>
 
+              {formData.category === 'people' && (
+                <div className="form-group">
+                  <VoiceRecorderBox
+                    audioUrl={formData.voiceAudioUrl}
+                    onAudioChange={(url) => setFormData({ ...formData, voiceAudioUrl: url })}
+                    greeting={formData.voiceGreeting}
+                    onGreetingChange={(text) => setFormData({ ...formData, voiceGreeting: text })}
+                    profile={formData.voiceProfile}
+                    onProfileChange={(prof) => setFormData({ ...formData, voiceProfile: prof })}
+                    pitch={formData.voicePitch}
+                    onPitchChange={(p) => setFormData({ ...formData, voicePitch: p })}
+                    personName={formData.name || 'Loved One'}
+                  />
+                </div>
+              )}
+
               <div className="form-actions">
-                <button type="button" className="btn-secondary" onClick={() => setIsModalOpen(false)}>
+                <button type="button" className="btn-secondary" onClick={() => { stopAllVoices(); setIsModalOpen(false); }}>
                   Cancel
                 </button>
                 <button type="submit" className="btn-accent">

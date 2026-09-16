@@ -35,6 +35,9 @@ const getFromStorage = (key, fallback) => {
 const setToStorage = (key, value) => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('mindora-storage-update', { detail: { key, value } }));
+    }
   } catch (e) {
     console.warn(`Error writing ${key} to localStorage:`, e);
   }
@@ -70,6 +73,13 @@ export const deleteMemory = (id) => {
   return updated;
 };
 
+export const editMemory = (id, updates) => {
+  const current = getMemories();
+  const updated = current.map(m => m.id === id ? { ...m, ...updates } : m);
+  saveMemories(updated);
+  return updated;
+};
+
 // --- Activities ---
 export const getActivities = () => getFromStorage(STORAGE_KEYS.ACTIVITIES, initialActivities);
 export const saveActivities = (activities) => {
@@ -101,7 +111,7 @@ const updateTodayTrend = (activity) => {
   const today = { ...trends[lastIndex] };
 
   // Adjust metrics based on activity
-  if (activity.type === 'memory-match' || activity.type === 'who-is-this') {
+  if (activity.type === 'memory-match' || activity.type === 'who-is-this' || activity.type === 'whos-speaking') {
     today.memory = Math.min(100, Math.round((today.memory * 4 + activity.accuracy) / 5));
     today.recognition = Math.min(100, Math.round((today.recognition * 4 + activity.accuracy) / 5));
   } else if (activity.type === 'pattern') {
@@ -147,6 +157,20 @@ export const addReminder = (reminder) => {
     completedAt: null
   };
   const updated = [...current, newRem];
+  saveReminders(updated);
+  return updated;
+};
+
+export const deleteReminder = (id) => {
+  const current = getReminders();
+  const updated = current.filter(r => r.id !== id);
+  saveReminders(updated);
+  return updated;
+};
+
+export const editReminder = (id, updates) => {
+  const current = getReminders();
+  const updated = current.map(r => r.id === id ? { ...r, ...updates } : r);
   saveReminders(updated);
   return updated;
 };

@@ -5,6 +5,7 @@ import { getDifficulty } from '../utils/adaptiveEngine';
 import { playFlipSound, playSuccessChime, playGentleTrySound } from '../utils/sound';
 import { User, Check, Heart, Camera, Plus, X, Users } from 'lucide-react';
 import ImageUploadBox from '../components/common/ImageUploadBox';
+import { useStorageListener } from '../hooks/useStorageListener';
 import './WhoIsThis.css';
 
 const DEFAULT_FAMILY_PRESETS = [
@@ -85,6 +86,15 @@ export default function WhoIsThis() {
   useEffect(() => {
     initGame();
   }, []);
+
+  useStorageListener((detail) => {
+    if (detail && detail.key === 'mindora_memories') {
+      // Reinitialize the game silently if a memory changes
+      if (!isCompleted) {
+         initGame();
+      }
+    }
+  });
 
   // Timer
   useEffect(() => {

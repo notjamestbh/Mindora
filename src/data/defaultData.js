@@ -33,7 +33,11 @@ export const initialMemories = [
     relation: "Daughter",
     description: "Visits every Sunday. Loves sharing morning tea on the verandah and tending the garden.",
     avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
-    hint: "Your daughter who visits on weekends"
+    hint: "Your daughter who visits on weekends",
+    voiceProfile: "daughter",
+    voicePitch: 1.15,
+    voiceRate: 0.88,
+    voiceGreeting: "Namaste Amma! It's Anu. I made some warm ginger tea for you and brought fresh tea leaves from the garden."
   },
   {
     id: "mem_p2",
@@ -43,7 +47,11 @@ export const initialMemories = [
     relation: "Son",
     description: "Civil engineer living in Guwahati. Calls every evening at 6 PM to ask about your day.",
     avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
-    hint: "Your son who calls every evening"
+    hint: "Your son who calls every evening",
+    voiceProfile: "son",
+    voicePitch: 0.85,
+    voiceRate: 0.90,
+    voiceGreeting: "Hello Amma, this is Arun calling from Guwahati! How was your morning walk today?"
   },
   {
     id: "mem_p3",
@@ -53,7 +61,11 @@ export const initialMemories = [
     relation: "Granddaughter",
     description: "7 years old. Loves drawing colorful birds and listening to Amma's folk tales.",
     avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
-    hint: "Your 7-year-old granddaughter who loves drawing"
+    hint: "Your 7-year-old granddaughter who loves drawing",
+    voiceProfile: "grandchild",
+    voicePitch: 1.35,
+    voiceRate: 0.94,
+    voiceGreeting: "Amma! It's Maya! Look at the colorful singing bird I drew for you today! Will you tell me a story?"
   },
   {
     id: "mem_p4",
@@ -63,7 +75,11 @@ export const initialMemories = [
     relation: "Husband",
     description: "Beloved companion of 45 years. Retired school headmaster who loved morning river walks.",
     avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
-    hint: "Your husband and lifelong companion"
+    hint: "Your husband and lifelong companion",
+    voiceProfile: "husband",
+    voicePitch: 0.78,
+    voiceRate: 0.84,
+    voiceGreeting: "Good morning, Lakshmi. The breeze on the verandah is so calm and peaceful today."
   },
 
   // Places

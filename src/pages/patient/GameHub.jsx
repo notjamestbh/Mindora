@@ -8,7 +8,9 @@ import {
   ArrowRight,
   Clock,
   Shuffle,
-  Calendar
+  Calendar,
+  Mic,
+  Volume2
 } from 'lucide-react';
 import { playFlipSound } from '../../utils/sound';
 import { getDifficulty } from '../../utils/adaptiveEngine';
@@ -19,12 +21,12 @@ export default function GameHub() {
 
   const gamesList = [
     {
-      to: '/game/memory-match',
-      title: 'Memory Match',
-      desc: 'Remember where familiar pictures are hidden.',
+      to: '/game/whos-speaking',
+      title: "Who's Speaking?",
+      desc: 'Listen to loved ones and recognize their voices.',
       time: 'About 2 minutes',
-      icon: Grid,
-      color: 'green'
+      icon: Volume2,
+      color: 'warm'
     },
     {
       to: '/game/who-is-this',
@@ -33,6 +35,14 @@ export default function GameHub() {
       time: 'About 2 minutes',
       icon: Heart,
       color: 'warm'
+    },
+    {
+      to: '/game/memory-match',
+      title: 'Memory Match',
+      desc: 'Remember where familiar pictures are hidden.',
+      time: 'About 2 minutes',
+      icon: Grid,
+      color: 'green'
     },
     {
       to: '/game/pattern',
