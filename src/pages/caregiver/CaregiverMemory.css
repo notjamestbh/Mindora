@@ -234,3 +234,24 @@
   color: #FFFFFF;
 }
 
+.cg-edit-mem-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cg-edit-mem-btn:hover {
+  background-color: var(--surface-primary);
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+

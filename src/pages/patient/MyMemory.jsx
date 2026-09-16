@@ -10,9 +10,10 @@ import {
   Check,
   Image as ImageIcon,
   Mic,
-  Radio
+  Radio,
+  Edit3
 } from 'lucide-react';
-import { getMemories, addMemory } from '../../utils/storage';
+import { getMemories, addMemory, editMemory } from '../../utils/storage';
 import { playFlipSound, playSuccessChime } from '../../utils/sound';
 import { speakText } from '../../utils/speech';
 import { playPersonVoice, stopAllVoices } from '../../utils/voicePlayer';
@@ -35,6 +36,7 @@ export default function MyMemory() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMemoryId, setEditingMemoryId] = useState(null);
   const [saveSuccessNotice, setSaveSuccessNotice] = useState(null);
 
   useStorageListener((detail) => {
@@ -72,6 +74,36 @@ export default function MyMemory() {
 
   const handleOpenModal = () => {
     playFlipSound();
+    setEditingMemoryId(null);
+    setFormData({
+      name: '',
+      category: 'people',
+      relation: '',
+      description: '',
+      avatarUrl: SAMPLE_AVATARS[0].url,
+      voiceAudioUrl: '',
+      voiceGreeting: '',
+      voiceProfile: 'daughter',
+      voicePitch: 1.15
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (mem) => {
+    playFlipSound();
+    setEditingMemoryId(mem.id);
+    const categoryVal = mem.category || (mem.type === 'person' ? 'people' : mem.type === 'place' ? 'places' : mem.type === 'thing' ? 'things' : 'moments');
+    setFormData({
+      name: mem.name || '',
+      category: categoryVal,
+      relation: mem.relation || '',
+      description: mem.description || '',
+      avatarUrl: mem.avatarUrl || SAMPLE_AVATARS[0].url,
+      voiceAudioUrl: mem.voiceAudioUrl || '',
+      voiceGreeting: mem.voiceGreeting || '',
+      voiceProfile: mem.voiceProfile || 'daughter',
+      voicePitch: typeof mem.voicePitch === 'number' ? mem.voicePitch : 1.15
+    });
     setIsModalOpen(true);
   };
 
@@ -79,6 +111,7 @@ export default function MyMemory() {
     playFlipSound();
     stopAllVoices();
     setIsModalOpen(false);
+    setEditingMemoryId(null);
   };
 
   const handleSelectMemoryCard = (mem) => {
@@ -112,37 +145,69 @@ export default function MyMemory() {
     if (!formData.name.trim()) return;
 
     playSuccessChime();
-    const newEntry = {
-      name: formData.name.trim(),
-      category: formData.category,
-      type: formData.category === 'people' ? 'person' : formData.category === 'places' ? 'place' : formData.category === 'things' ? 'thing' : 'moment',
-      relation: formData.relation.trim() || 'Family Member',
-      description: formData.description.trim() || 'A cherished memory in our family circle.',
-      avatarUrl: formData.avatarUrl,
-      hint: formData.relation.trim() || formData.name.trim(),
-      voiceAudioUrl: formData.voiceAudioUrl || '',
-      voiceGreeting: formData.voiceGreeting || '',
-      voiceProfile: formData.voiceProfile || 'daughter',
-      voicePitch: formData.voicePitch || 1.0
-    };
 
-    const updated = addMemory(newEntry);
-    setMemories(updated);
-    setIsModalOpen(false);
-    setFormData({
-      name: '',
-      category: 'people',
-      relation: '',
-      description: '',
-      avatarUrl: SAMPLE_AVATARS[0].url,
-      voiceAudioUrl: '',
-      voiceGreeting: '',
-      voiceProfile: 'daughter',
-      voicePitch: 1.15
-    });
+    if (editingMemoryId) {
+      // Edit existing memory
+      const updatedFields = {
+        name: formData.name.trim(),
+        category: formData.category,
+        type: formData.category === 'people' ? 'person' : formData.category === 'places' ? 'place' : formData.category === 'things' ? 'thing' : 'moment',
+        relation: formData.relation.trim() || 'Family Member',
+        description: formData.description.trim() || 'A cherished memory in our family circle.',
+        avatarUrl: formData.avatarUrl,
+        hint: formData.relation.trim() || formData.name.trim(),
+        voiceAudioUrl: formData.voiceAudioUrl || '',
+        voiceGreeting: formData.voiceGreeting || '',
+        voiceProfile: formData.voiceProfile || 'daughter',
+        voicePitch: formData.voicePitch || 1.0
+      };
 
-    setSaveSuccessNotice(`"${newEntry.name}" added to memories! Voice clip ready for "Who's Speaking?".`);
-    setTimeout(() => setSaveSuccessNotice(null), 4000);
+      const updated = editMemory(editingMemoryId, updatedFields);
+      setMemories(updated);
+
+      if (selectedMemory && selectedMemory.id === editingMemoryId) {
+        setSelectedMemory({ ...selectedMemory, ...updatedFields });
+      }
+
+      setIsModalOpen(false);
+      setEditingMemoryId(null);
+
+      setSaveSuccessNotice(`"${updatedFields.name}" updated! Changes are live in TalkBot and memory games.`);
+      setTimeout(() => setSaveSuccessNotice(null), 4000);
+    } else {
+      // Create new memory
+      const newEntry = {
+        name: formData.name.trim(),
+        category: formData.category,
+        type: formData.category === 'people' ? 'person' : formData.category === 'places' ? 'place' : formData.category === 'things' ? 'thing' : 'moment',
+        relation: formData.relation.trim() || 'Family Member',
+        description: formData.description.trim() || 'A cherished memory in our family circle.',
+        avatarUrl: formData.avatarUrl,
+        hint: formData.relation.trim() || formData.name.trim(),
+        voiceAudioUrl: formData.voiceAudioUrl || '',
+        voiceGreeting: formData.voiceGreeting || '',
+        voiceProfile: formData.voiceProfile || 'daughter',
+        voicePitch: formData.voicePitch || 1.0
+      };
+
+      const updated = addMemory(newEntry);
+      setMemories(updated);
+      setIsModalOpen(false);
+      setFormData({
+        name: '',
+        category: 'people',
+        relation: '',
+        description: '',
+        avatarUrl: SAMPLE_AVATARS[0].url,
+        voiceAudioUrl: '',
+        voiceGreeting: '',
+        voiceProfile: 'daughter',
+        voicePitch: 1.15
+      });
+
+      setSaveSuccessNotice(`"${newEntry.name}" added to memories! Voice clip ready for "Who's Speaking?".`);
+      setTimeout(() => setSaveSuccessNotice(null), 4000);
+    }
   };
 
   return (
@@ -259,6 +324,17 @@ export default function MyMemory() {
                     >
                       <Volume2 size={16} />
                     </button>
+                    <button
+                      className="edit-card-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEdit(mem);
+                      }}
+                      title={`Edit ${mem.name}`}
+                      aria-label={`Edit ${mem.name}`}
+                    >
+                      <Edit3 size={15} />
+                    </button>
                   </div>
                 </div>
                 <p className="memory-desc-snippet">{mem.description}</p>
@@ -291,11 +367,25 @@ export default function MyMemory() {
 
                 <div className="modal-actions-right">
                   <button
+                    className="modal-edit-btn"
+                    onClick={() => {
+                      const memToEdit = selectedMemory;
+                      setSelectedMemory(null);
+                      handleOpenEdit(memToEdit);
+                    }}
+                    title="Edit this memory"
+                    aria-label={`Edit ${selectedMemory.name}`}
+                  >
+                    <Edit3 size={15} />
+                    <span>Edit</span>
+                  </button>
+
+                  <button
                     className="modal-audio-btn"
                     onClick={() => handleSpeakMemory(selectedMemory)}
                     aria-label="Listen to memory description"
                   >
-                    <Volume2 size={18} />
+                    <Volume2 size={16} />
                     <span>Story</span>
                   </button>
                 </div>
@@ -338,7 +428,9 @@ export default function MyMemory() {
         <div className="modal-backdrop animate-fade-in" onClick={handleCloseModal}>
           <div className="memory-add-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-heading">Add a Cherished Memory</h2>
+              <h2 className="modal-heading">
+                {editingMemoryId ? "Edit Cherished Memory" : "Add a Cherished Memory"}
+              </h2>
               <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close modal">
                 <X size={20} />
               </button>
@@ -425,7 +517,7 @@ export default function MyMemory() {
                 </button>
                 <button type="submit" className="btn-accent">
                   <Check size={18} />
-                  <span>Save Memory</span>
+                  <span>{editingMemoryId ? "Save Changes" : "Save Memory"}</span>
                 </button>
               </div>
             </form>

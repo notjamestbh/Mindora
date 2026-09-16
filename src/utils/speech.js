@@ -216,56 +216,80 @@ export const getAssistantResponse = (userQuery) => {
     }
   }
 
-  // 3. Daughter Anu / Family visits
-  if (query.includes('anu') || query.includes('visiting') || query.includes('daughter') || query.includes('visit')) {
+  // 3. Dynamic Memory Lookup (Matches any Person, Place, Thing, or Moment in storage)
+  const matchedMemory = memories.find(m => {
+    const nameLower = (m.name || '').toLowerCase();
+    const relLower = (m.relation || '').toLowerCase();
+    // Match by person/place name
+    if (nameLower && query.includes(nameLower)) return true;
+    // Match by relationship / category keyword (if >= 3 characters)
+    if (relLower && relLower.length >= 3 && query.includes(relLower)) return true;
+    return false;
+  });
+
+  if (matchedMemory) {
+    const isPerson = matchedMemory.type === 'person' || matchedMemory.category === 'people';
+    let text = "";
+    if (isPerson) {
+      text = `${matchedMemory.name} is your ${matchedMemory.relation || 'family member'}. ${matchedMemory.description}`;
+      if (matchedMemory.voiceGreeting) {
+        text += ` ${matchedMemory.name}'s voice greeting says: "${matchedMemory.voiceGreeting}"`;
+      }
+    } else {
+      text = `${matchedMemory.name} (${matchedMemory.relation || 'cherished memory'}): ${matchedMemory.description}`;
+    }
+
     return {
-      text: "Your daughter Anu visits every Sunday morning. She will bring fresh tea leaves and enjoy a quiet verandah walk with you.",
-      action: "/memory"
+      text,
+      action: "/memory",
+      actionLabel: `View ${matchedMemory.name} in Memories`
     };
   }
 
-  // 4. Son Arun / Phone call
-  if (query.includes('arun') || query.includes('son') || query.includes('call')) {
+  // 4. Broad Family Query: "tell me about my family", "who are my family", "loved ones"
+  if (
+    query.includes('family') ||
+    query.includes('relative') ||
+    query.includes('children') ||
+    query.includes('kids') ||
+    query.includes('loved one') ||
+    query.includes('who are my')
+  ) {
+    const familyMembers = memories.filter(m => m.type === 'person' || m.category === 'people');
+    if (familyMembers.length > 0) {
+      const namesList = familyMembers.map(m => `${m.name} (${m.relation || 'Family'})`).join(', ');
+      return {
+        text: `In your family circle, you have ${namesList}. Would you like to hear more about any of them, or listen to their voice in 'Who's Speaking?'?`,
+        action: "/memory",
+        actionLabel: "View Family Memories"
+      };
+    }
+  }
+
+  // 5. Show memories / photos
+  if (
+    query.includes('memory') ||
+    query.includes('memories') ||
+    query.includes('photo') ||
+    query.includes('pictures') ||
+    query.includes('album')
+  ) {
+    const familyCount = memories.filter(m => m.type === 'person' || m.category === 'people').length;
+    const placesCount = memories.filter(m => m.type === 'place' || m.category === 'places').length;
     return {
-      text: "Your son Arun lives in Guwahati and calls every evening around 6:00 PM to ask about your day.",
-      action: "/memory"
+      text: `You have ${memories.length} cherished memories saved—including ${familyCount} loving family members and ${placesCount} familiar places. You can tap below to view your album or play 'Who Is This?'.`,
+      action: "/memory",
+      actionLabel: "Open My Memory"
     };
   }
 
-  // 5. Granddaughter Maya
-  if (query.includes('maya') || query.includes('granddaughter') || query.includes('child')) {
-    return {
-      text: "Maya is your seven-year-old granddaughter. She loves drawing colorful birds and hearing your folk stories.",
-      action: "/memory"
-    };
-  }
-
-  // 6. Husband Ravi
-  if (query.includes('ravi') || query.includes('husband')) {
-    return {
-      text: "Ravi was your loving husband and companion of 45 years. You shared many peaceful morning walks along the river.",
-      action: "/memory"
-    };
-  }
-
-  // 7. Show memories / photos
-  if (query.includes('memory') || query.includes('memories') || query.includes('photo') || query.includes('pictures')) {
-    return {
-      text: `You have ${memories.length} cherished memories saved with Anu, Maya, Ravi, and your family home in Assam.`,
-      action: "/memory"
-    };
-  }
-
-  // 7.5 Voice game / Who's speaking / Recognize voice
+  // 6. Voice game / Who's speaking / Recognize voice
   if (
     query.includes('voice') ||
     query.includes('speaking') ||
     query.includes('whose voice') ||
     query.includes('who is speaking') ||
-    query.includes('hear anu') ||
-    query.includes('hear arun') ||
-    query.includes('hear maya') ||
-    query.includes('hear ravi')
+    query.includes('hear voice')
   ) {
     return {
       text: "Let's play 'Who's Speaking?'! You can listen to familiar voices of your loved ones and recognize who is talking.",
@@ -274,15 +298,16 @@ export const getAssistantResponse = (userQuery) => {
     };
   }
 
-  // 8. Play game / activity
+  // 7. Play game / activity
   if (query.includes('play') || query.includes('game') || query.includes('activity') || query.includes('exercise')) {
     return {
-      text: "Let's play an activity! 'Who's Speaking?', Memory Match and 'Who Is This?' are ready for you right now.",
-      action: "/play"
+      text: "Let's play an activity! 'Who's Speaking?', Memory Match, and 'Who Is This?' are ready for you right now.",
+      action: "/play",
+      actionLabel: "Choose an Activity"
     };
   }
 
-  // 9. Time / Day
+  // 8. Time / Day
   if (query.includes('time') || query.includes('day') || query.includes('date')) {
     const now = new Date();
     const dayName = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
@@ -293,9 +318,77 @@ export const getAssistantResponse = (userQuery) => {
     };
   }
 
-  // Default warm assistance
-  return {
-    text: "I am here with you, Amma. You can ask me about your medicine, today's schedule, or your family photos.",
-    action: null
-  };
+  // 9. Friendly Greetings ("hello", "hi", "namaste", "good morning")
+  if (
+    query.includes('hello') ||
+    query.includes('hi') ||
+    query.includes('namaste') ||
+    query.includes('hey') ||
+    query.includes('good morning') ||
+    query.includes('good afternoon') ||
+    query.includes('good evening')
+  ) {
+    const hour = new Date().getHours();
+    const greetingTime = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+    const name = patient?.name || "Amma";
+    return {
+      text: `${greetingTime}, ${name}! It is wonderful to talk with you. How are you feeling right now? We can review your schedule, talk about your family, or play a relaxing memory game.`,
+      action: null
+    };
+  }
+
+  // 10. Companion Identity & Capabilities ("who are you", "what can you do", "help")
+  if (
+    query.includes('who are you') ||
+    query.includes('what can you do') ||
+    query.includes('how are you') ||
+    query.includes('help')
+  ) {
+    return {
+      text: `I am Mindora, your everyday cognitive companion. I'm here to gently remind you of medicines and routines, share family memories, and play relaxing memory exercises with you. What would you like to do?`,
+      action: null
+    };
+  }
+
+  // --- REVAMPED DYNAMIC EMPATHETIC FALLBACKS ---
+  // When query is not specifically recognized, choose from a pool of varied, supportive prompts
+  const name = patient?.name || "Amma";
+  const familyMembers = memories.filter(m => m.type === 'person' || m.category === 'people');
+  const samplePerson = familyMembers.length > 0
+    ? familyMembers[Math.floor(Math.random() * familyMembers.length)]
+    : null;
+  const pendingRoutines = reminders.filter(r => !r.completed);
+  const nextRoutine = pendingRoutines.length > 0 ? pendingRoutines[0] : null;
+
+  const fallbackResponses = [
+    {
+      text: `I'm listening gently, ${name}. You can ask me about your schedule${nextRoutine ? ` (like your ${nextRoutine.title} at ${nextRoutine.time})` : ''}, or ask me about ${samplePerson ? samplePerson.name : 'your family'}. What sounds comforting to you?`,
+      action: nextRoutine ? "/today" : "/memory",
+      actionLabel: nextRoutine ? "View Today's Routine" : "View Memories"
+    },
+    {
+      text: `I am right here with you, ${name}. There is never any rush. Would you like to hear a family memory${samplePerson ? ` of ${samplePerson.name}` : ''}, or shall we play 'Who's Speaking?' together?`,
+      action: "/game/whos-speaking",
+      actionLabel: "Play Who's Speaking"
+    },
+    {
+      text: `Take your time, ${name}. You can ask me 'When is my next medicine?', 'Tell me about ${samplePerson ? samplePerson.name : 'my family'}', or say 'Let's play a game'. How can I help you right now?`,
+      action: "/today",
+      actionLabel: "Check Today's Schedule"
+    },
+    {
+      text: `I didn't quite catch that, but I'm right by your side, ${name}. Would you like to check your daily routine progress or listen to familiar voices in your memory album?`,
+      action: "/memory",
+      actionLabel: "Open Memories"
+    },
+    {
+      text: `Every moment at your own peaceful pace, ${name}. You can ask me to summarize your cognitive stats, check your evening pills, or look at your family photos. What sounds best?`,
+      action: "/caregiver",
+      actionLabel: "View Activity Stats"
+    }
+  ];
+
+  // Rotate response pseudo-randomly based on query length and minute
+  const chosenIndex = (query.length + new Date().getMinutes()) % fallbackResponses.length;
+  return fallbackResponses[chosenIndex];
 };

@@ -535,3 +535,46 @@
   animation: pulse-gentle 1.5s infinite ease-in-out;
 }
 
+.edit-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.edit-card-btn:hover {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  transform: scale(1.06);
+}
+
+.modal-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--surface-primary);
+  border: 1.5px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-edit-btn:hover {
+  background-color: var(--surface-secondary);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+

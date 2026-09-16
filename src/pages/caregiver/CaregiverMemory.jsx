@@ -10,9 +10,10 @@ import {
   X,
   Info,
   Volume2,
-  Mic
+  Mic,
+  Edit3
 } from 'lucide-react';
-import { getMemories, addMemory, deleteMemory } from '../../utils/storage';
+import { getMemories, addMemory, deleteMemory, editMemory } from '../../utils/storage';
 import { playFlipSound, playSuccessChime } from '../../utils/sound';
 import { playPersonVoice, stopAllVoices } from '../../utils/voicePlayer';
 import ImageUploadBox from '../../components/common/ImageUploadBox';
@@ -32,6 +33,7 @@ const SAMPLE_OPTIONS = [
 export default function CaregiverMemory() {
   const [memories, setMemories] = useState(getMemories());
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMemoryId, setEditingMemoryId] = useState(null);
   const [presetCategory, setPresetCategory] = useState('people');
   const [feedbackNotice, setFeedbackNotice] = useState(null);
   const [playingVoiceId, setPlayingVoiceId] = useState(null);
@@ -56,6 +58,7 @@ export default function CaregiverMemory() {
 
   const handleOpenAdd = (cat = 'people') => {
     playFlipSound();
+    setEditingMemoryId(null);
     setPresetCategory(cat);
     setFormData({
       name: '',
@@ -67,6 +70,25 @@ export default function CaregiverMemory() {
       voiceGreeting: '',
       voiceProfile: 'daughter',
       voicePitch: 1.15
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (mem) => {
+    playFlipSound();
+    setEditingMemoryId(mem.id);
+    const cat = mem.category || (mem.type === 'person' ? 'people' : mem.type === 'place' ? 'places' : 'things');
+    setPresetCategory(cat);
+    setFormData({
+      name: mem.name || '',
+      category: cat,
+      relation: mem.relation || '',
+      description: mem.description || '',
+      avatarUrl: mem.avatarUrl || SAMPLE_OPTIONS[0].url,
+      voiceAudioUrl: mem.voiceAudioUrl || '',
+      voiceGreeting: mem.voiceGreeting || '',
+      voiceProfile: mem.voiceProfile || 'daughter',
+      voicePitch: typeof mem.voicePitch === 'number' ? mem.voicePitch : 1.15
     });
     setIsModalOpen(true);
   };
@@ -100,26 +122,53 @@ export default function CaregiverMemory() {
     if (!formData.name.trim()) return;
 
     playSuccessChime();
-    const newMem = {
-      name: formData.name.trim(),
-      category: formData.category,
-      type: formData.category === 'people' ? 'person' : formData.category === 'places' ? 'place' : 'thing',
-      relation: formData.relation.trim() || 'Family',
-      description: formData.description.trim() || 'A familiar memory.',
-      avatarUrl: formData.avatarUrl,
-      hint: formData.relation.trim(),
-      voiceAudioUrl: formData.voiceAudioUrl || '',
-      voiceGreeting: formData.voiceGreeting || '',
-      voiceProfile: formData.voiceProfile || 'daughter',
-      voicePitch: formData.voicePitch || 1.0
-    };
 
-    const updated = addMemory(newMem);
-    setMemories([...updated]);
-    setIsModalOpen(false);
+    if (editingMemoryId) {
+      // Edit existing memory
+      const updatedMem = {
+        name: formData.name.trim(),
+        category: formData.category,
+        type: formData.category === 'people' ? 'person' : formData.category === 'places' ? 'place' : 'thing',
+        relation: formData.relation.trim() || 'Family',
+        description: formData.description.trim() || 'A familiar memory.',
+        avatarUrl: formData.avatarUrl,
+        hint: formData.relation.trim() || formData.name.trim(),
+        voiceAudioUrl: formData.voiceAudioUrl || '',
+        voiceGreeting: formData.voiceGreeting || '',
+        voiceProfile: formData.voiceProfile || 'daughter',
+        voicePitch: formData.voicePitch || 1.0
+      };
 
-    setFeedbackNotice(`Added "${newMem.name}". Voice clip and photo are now ready in patient games like "Who's Speaking?".`);
-    setTimeout(() => setFeedbackNotice(null), 4500);
+      const updated = editMemory(editingMemoryId, updatedMem);
+      setMemories([...updated]);
+      setIsModalOpen(false);
+      setEditingMemoryId(null);
+
+      setFeedbackNotice(`"${updatedMem.name}" updated successfully! Changes immediately live in TalkBot and memory activities.`);
+      setTimeout(() => setFeedbackNotice(null), 4500);
+    } else {
+      // Add new memory
+      const newMem = {
+        name: formData.name.trim(),
+        category: formData.category,
+        type: formData.category === 'people' ? 'person' : formData.category === 'places' ? 'place' : 'thing',
+        relation: formData.relation.trim() || 'Family',
+        description: formData.description.trim() || 'A familiar memory.',
+        avatarUrl: formData.avatarUrl,
+        hint: formData.relation.trim(),
+        voiceAudioUrl: formData.voiceAudioUrl || '',
+        voiceGreeting: formData.voiceGreeting || '',
+        voiceProfile: formData.voiceProfile || 'daughter',
+        voicePitch: formData.voicePitch || 1.0
+      };
+
+      const updated = addMemory(newMem);
+      setMemories([...updated]);
+      setIsModalOpen(false);
+
+      setFeedbackNotice(`Added "${newMem.name}". Voice clip and photo are now ready in patient games like "Who's Speaking?".`);
+      setTimeout(() => setFeedbackNotice(null), 4500);
+    }
   };
 
   return (
@@ -198,6 +247,15 @@ export default function CaregiverMemory() {
                     </button>
                   )}
                   <button
+                    type="button"
+                    className="cg-edit-mem-btn"
+                    onClick={() => handleOpenEdit(mem)}
+                    title={`Edit ${mem.name}`}
+                    aria-label={`Edit ${mem.name}`}
+                  >
+                    <Edit3 size={15} />
+                  </button>
+                  <button
                     className="delete-mem-btn"
                     onClick={() => handleDelete(mem.id, mem.name)}
                     title="Remove from memory library"
@@ -215,12 +273,14 @@ export default function CaregiverMemory() {
         ))}
       </div>
 
-      {/* Modal for adding */}
+      {/* Modal for adding / editing */}
       {isModalOpen && (
         <div className="modal-backdrop animate-fade-in" onClick={() => { stopAllVoices(); setIsModalOpen(false); }}>
           <div className="cg-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-heading">Add to Memory Library</h2>
+              <h2 className="modal-heading">
+                {editingMemoryId ? "Edit Memory in Library" : "Add to Memory Library"}
+              </h2>
               <button className="modal-close-btn" onClick={() => { stopAllVoices(); setIsModalOpen(false); }} aria-label="Close modal">
                 <X size={20} />
               </button>
@@ -307,7 +367,7 @@ export default function CaregiverMemory() {
                 </button>
                 <button type="submit" className="btn-accent">
                   <Check size={18} />
-                  <span>Save Memory</span>
+                  <span>{editingMemoryId ? "Save Changes" : "Save Memory"}</span>
                 </button>
               </div>
             </form>
