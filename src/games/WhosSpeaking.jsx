@@ -140,12 +140,12 @@ export default function WhosSpeaking() {
     }
 
     const currentPerson = list[index];
-    const otherNames = list.filter(p => p.name !== currentPerson.name).map(p => p.name);
+    const otherPeople = list.filter(p => p.name !== currentPerson.name);
 
     // Pick 2-3 distractors based on difficulty
     const distractorCount = diffInfo.difficulty === 'hard' ? 3 : 2;
-    const shuffledDistractors = otherNames.sort(() => Math.random() - 0.5).slice(0, distractorCount);
-    const roundOptions = [currentPerson.name, ...shuffledDistractors].sort(() => Math.random() - 0.5);
+    const shuffledDistractors = otherPeople.sort(() => Math.random() - 0.5).slice(0, distractorCount);
+    const roundOptions = [currentPerson, ...shuffledDistractors].sort(() => Math.random() - 0.5);
 
     setOptions(roundOptions);
     setSelectedOption(null);
@@ -226,16 +226,17 @@ export default function WhosSpeaking() {
   }, [startTime, isCompleted]);
 
   // Handle Option Selection
-  const handleSelectOption = (name) => {
+  const handleSelectOption = (opt) => {
     if (isRevealed) return; // Round already solved
 
+    const optName = typeof opt === 'string' ? opt : opt.name;
     playFlipSound();
     setAttempts(prev => prev + 1);
-    setSelectedOption(name);
+    setSelectedOption(optName);
 
     const currentPerson = people[currentIndex];
 
-    if (name.toLowerCase() === currentPerson.name.toLowerCase()) {
+    if (optName.toLowerCase() === currentPerson.name.toLowerCase()) {
       // --- CORRECT ANSWER ---
       stopAllVoices();
       playSuccessChime();
@@ -259,7 +260,7 @@ export default function WhosSpeaking() {
     } else {
       // --- GENTLE RE-TRY (REPLAY VOICE AUTOMATICALLY) ---
       playGentleTrySound();
-      setWrongAnswers(prev => [...prev, name]);
+      setWrongAnswers(prev => [...prev, optName]);
       setFeedback({
         isCorrect: false,
         message: "That's okay, Amma. Take your time! Listen to the voice once more."
@@ -450,22 +451,46 @@ export default function WhosSpeaking() {
               </button>
             </div>
 
-            {/* Multiple Choice Options List */}
+            {/* Multiple Choice Options List with Character Images & Names */}
             <div className="whos-options-grid">
-              {options.map((name) => {
-                const isSelected = selectedOption === name;
-                const isWrong = wrongAnswers.includes(name);
-                const isRight = isRevealed && name.toLowerCase() === currentPerson.name.toLowerCase();
+              {options.map((opt) => {
+                const optName = typeof opt === 'string' ? opt : opt.name;
+                const optAvatar = typeof opt === 'string' ? '' : opt.avatarUrl;
+                const optRelation = typeof opt === 'string' ? '' : opt.relation;
+                const isSelected = selectedOption === optName;
+                const isWrong = wrongAnswers.includes(optName);
+                const isRight = isRevealed && optName.toLowerCase() === currentPerson.name.toLowerCase();
 
                 return (
                   <button
-                    key={name}
+                    key={optName}
                     className={`whos-option-card ${isRight ? 'correct' : ''} ${isWrong ? 'incorrect' : ''} ${isSelected && !isRight && !isWrong ? 'selected' : ''}`}
-                    onClick={() => handleSelectOption(name)}
+                    onClick={() => handleSelectOption(opt)}
                     disabled={isRevealed || isWrong}
-                    aria-label={`Choose ${name}`}
+                    aria-label={`Choose ${optName}`}
                   >
-                    <span className="option-name-label">{name}</span>
+                    <div className="option-photo-wrap">
+                      {optAvatar ? (
+                        <img
+                          src={optAvatar}
+                          alt={optName}
+                          className="option-photo"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className="option-photo-fallback" style={{ display: optAvatar ? 'none' : 'flex' }}>
+                        <User size={22} />
+                      </div>
+                    </div>
+
+                    <div className="option-text-group">
+                      <span className="option-name-label">{optName}</span>
+                      {optRelation && <span className="option-relation-sub">{optRelation}</span>}
+                    </div>
+
                     {isRight && <Check size={24} className="option-check-icon" />}
                   </button>
                 );
