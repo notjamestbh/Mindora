@@ -1,0 +1,16 @@
+.patient-app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.patient-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--bottom-nav-height);
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}

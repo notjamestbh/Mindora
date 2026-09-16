@@ -1,0 +1,179 @@
+.caregiver-activity-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 80px 24px;
+  width: 100%;
+}
+
+.activity-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.activity-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-pill:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.filter-pill.active {
+  background-color: var(--text-primary);
+  color: #FFFFFF;
+  border-color: var(--text-primary);
+}
+
+.activity-feed-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-item-card {
+  display: flex;
+  gap: 20px;
+  position: relative;
+}
+
+.feed-icon-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feed-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 0 0 4px var(--bg-primary);
+}
+
+.feed-icon-circle.game {
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 122, 99, 0.3);
+}
+
+.feed-icon-circle.routine {
+  background-color: #EDF2F7;
+  color: #4A5568;
+  border: 1px solid var(--border-subtle);
+}
+
+.feed-connector-line {
+  width: 2px;
+  background-color: var(--border-subtle);
+  flex: 1;
+  margin: 4px 0;
+}
+
+.feed-item-card:last-child .feed-connector-line {
+  display: none;
+}
+
+.feed-content-column {
+  flex: 1;
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.feed-top-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.feed-timestamp {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.feed-type-pill {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.feed-type-pill.game {
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+}
+
+.feed-type-pill.routine {
+  background-color: var(--surface-muted);
+  color: var(--text-secondary);
+}
+
+.feed-item-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.feed-item-notes {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.feed-metrics-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.metric-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.metric-tag-label {
+  color: var(--text-secondary);
+}
+
+.metric-tag-val {
+  color: var(--text-primary);
+}
+
+.difficulty-name {
+  text-transform: capitalize;
+  font-weight: 600;
+  color: var(--accent-green);
+}

@@ -1,0 +1,114 @@
+.ambient-bg-wrapper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  background: 
+    radial-gradient(circle at 10% 15%, rgba(214, 185, 108, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 90% 10%, rgba(102, 122, 99, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 85%, rgba(184, 120, 92, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 20% 90%, rgba(102, 122, 99, 0.08) 0%, transparent 45%),
+    linear-gradient(180deg, #FBFBF9 0%, #F5F4EE 100%);
+}
+
+/* Atmospheric Glow Orbs */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+}
+
+.glow-top-right {
+  top: -8%;
+  right: -5%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(214, 185, 108, 0.14) 0%, rgba(247, 246, 242, 0) 70%);
+}
+
+.glow-bottom-left {
+  bottom: -10%;
+  left: -5%;
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(102, 122, 99, 0.12) 0%, rgba(247, 246, 242, 0) 70%);
+}
+
+.glow-center-warm {
+  top: 30%;
+  left: 20%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(184, 120, 92, 0.05) 0%, rgba(247, 246, 242, 0) 70%);
+}
+
+/* Landscape SVG */
+.ambient-landscape-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 240px;
+  max-height: 52vh;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Subtle Floating Leaves */
+.ambient-leaf {
+  position: absolute;
+  width: 20px;
+  height: 12px;
+  border-radius: 12px 0 12px 0;
+  background-color: var(--accent-green);
+  opacity: 0.09;
+  filter: blur(0.5px);
+}
+
+.leaf-1 {
+  top: 22%;
+  left: 8%;
+  transform: rotate(25deg);
+  animation: gentleDrift 14s infinite alternate ease-in-out;
+}
+
+.leaf-2 {
+  top: 48%;
+  right: 12%;
+  transform: rotate(-35deg);
+  width: 16px;
+  height: 10px;
+  animation: gentleDrift 18s infinite alternate-reverse ease-in-out;
+}
+
+.leaf-3 {
+  bottom: 28%;
+  left: 15%;
+  transform: rotate(15deg);
+  width: 24px;
+  height: 14px;
+  opacity: 0.07;
+  animation: gentleDrift 16s infinite alternate ease-in-out;
+}
+
+@keyframes gentleDrift {
+  0% { transform: translateY(0px) rotate(20deg); }
+  50% { transform: translateY(-12px) rotate(28deg); }
+  100% { transform: translateY(6px) rotate(14deg); }
+}
+
+/* High Contrast Override */
+html[data-high-contrast="true"] .ambient-bg-wrapper {
+  background: #FFFFFF;
+}
+
+html[data-high-contrast="true"] .glow-orb,
+html[data-high-contrast="true"] .ambient-leaf {
+  display: none;
+}
+
+html[data-high-contrast="true"] .ambient-landscape-svg {
+  opacity: 0.05;
+}

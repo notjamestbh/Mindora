@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './variables.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100%;
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(214, 185, 108, 0.09) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(102, 122, 99, 0.09) 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(184, 120, 92, 0.06) 0%, transparent 45%),
+    linear-gradient(180deg, #FAF8F4 0%, #F4F2EB 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--font-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* Standard Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--text-primary);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  font-size: 1rem;
+  min-height: var(--min-touch-target);
+  transition: all var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background-color: #000000;
+  transform: translateY(-1px);
+}
+
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--accent-green);
+  color: #FFFFFF;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  font-size: 1.05rem;
+  min-height: var(--min-touch-target);
+  transition: all var(--transition-fast);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--surface-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  font-size: 0.95rem;
+  min-height: var(--min-touch-target);
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface-muted);
+  border-color: var(--border-strong);
+}
+
+/* Patient Big Button */
+.btn-patient-large {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: var(--surface-primary);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-subtle);
+  padding: 16px 28px;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-patient-base);
+  font-weight: 600;
+  min-height: 56px;
+  box-shadow: var(--shadow-subtle);
+  transition: all var(--transition-fast);
+}
+
+.btn-patient-large:hover, .btn-patient-large:focus-visible {
+  border-color: var(--accent-green);
+  background-color: var(--accent-green-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+/* Card primitives */
+.card-base {
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-subtle);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.card-base:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-card);
+}
+
+/* Layout wrappers */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Patient Layout */
+.patient-view-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px 16px 100px 16px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .patient-view-wrapper {
+    max-width: 760px;
+    padding: 24px 24px 100px 24px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .patient-view-wrapper {
+    max-width: 860px;
+    padding: 32px 32px 60px 32px;
+  }
+}
+
+/* Patient Headings */
+.patient-greeting {
+  font-size: var(--font-patient-hero);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.patient-subhead {
+  font-size: var(--font-patient-base);
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* Caregiver Layout */
+.caregiver-view-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 80px 20px;
+  width: 100%;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-green {
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 122, 99, 0.2);
+}
+
+.badge-warm {
+  background-color: var(--accent-warm-light);
+  color: var(--accent-warm);
+  border: 1px solid rgba(184, 120, 92, 0.2);
+}
+
+.badge-neutral {
+  background-color: var(--surface-muted);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 300ms var(--ease-natural) forwards;
+}

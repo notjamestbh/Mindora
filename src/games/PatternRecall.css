@@ -1,0 +1,211 @@
+.pattern-recall-container {
+  width: 100%;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pattern-status-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.level-badge {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.phase-indicator {
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.memorize-tag, .recall-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.memorize-tag {
+  background-color: var(--accent-yellow-light);
+  color: #8C6239;
+  border: 1px solid rgba(214, 185, 108, 0.4);
+}
+
+.recall-tag {
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 122, 99, 0.2);
+}
+
+.sequence-card {
+  width: 100%;
+  background-color: var(--surface-primary);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 32px 20px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+.sequence-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sequence-node {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shape-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-md);
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-primary);
+  box-shadow: var(--shadow-subtle);
+  transition: all var(--transition-fast);
+}
+
+.shape-circle.missing-spot {
+  border: 2px dashed var(--accent-green);
+  background-color: var(--accent-green-light);
+}
+
+.question-mark {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+.sequence-arrow {
+  font-size: 1.4rem;
+  color: var(--text-muted);
+}
+
+.recall-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recall-prompt {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.pattern-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.pattern-option-btn {
+  background-color: var(--surface-primary);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-height: 100px;
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pattern-option-btn:hover {
+  border-color: var(--accent-green);
+  background-color: var(--accent-green-light);
+  transform: translateY(-2px);
+}
+
+.pattern-option-btn.correct {
+  border-color: var(--accent-green);
+  background-color: var(--accent-green-light);
+  box-shadow: 0 0 0 2px var(--accent-green);
+}
+
+.pattern-option-btn.incorrect {
+  border-color: var(--accent-warm);
+  background-color: var(--accent-warm-light);
+}
+
+.option-shape-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pattern-feedback {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.pattern-feedback.positive {
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 122, 99, 0.3);
+}
+
+.pattern-feedback.encouraging {
+  background-color: var(--surface-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 480px) {
+  .shape-circle {
+    width: 52px;
+    height: 52px;
+  }
+
+  .sequence-track {
+    gap: 6px;
+  }
+
+  .sequence-node {
+    gap: 6px;
+  }
+
+  .pattern-options-grid {
+    gap: 10px;
+  }
+}

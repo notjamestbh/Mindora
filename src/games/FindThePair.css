@@ -1,0 +1,131 @@
+.pair-game-container {
+  width: 100%;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pair-status-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.pair-theme-pill {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-green);
+  background-color: var(--accent-green-light);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.pair-counter {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.pair-prompt {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.pair-objects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 480px) {
+  .pair-objects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.pair-item-card {
+  background-color: var(--surface-primary);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-height: 120px;
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.pair-item-card:hover {
+  border-color: var(--accent-green);
+  background-color: var(--accent-green-light);
+  transform: translateY(-2px);
+}
+
+.pair-item-card.selected {
+  border-color: var(--accent-green);
+  background-color: var(--accent-green-light);
+  box-shadow: 0 0 0 2px var(--accent-green);
+}
+
+.pair-item-card.paired {
+  border-color: var(--accent-green);
+  background-color: var(--accent-green-light);
+}
+
+.pair-icon-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pair-item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pair-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--accent-green);
+}
+
+.pair-feedback-banner {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.pair-feedback-banner.positive {
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 122, 99, 0.3);
+}
+
+.pair-feedback-banner.encouraging {
+  background-color: var(--surface-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}

@@ -1,0 +1,164 @@
+.caregiver-reminders-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px 80px 24px;
+  width: 100%;
+}
+
+.reminders-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.add-reminder-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-green);
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-subtle);
+  transition: all var(--transition-fast);
+}
+
+.add-reminder-btn:hover {
+  background-color: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+
+.reminder-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.reminders-table-card {
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-subtle);
+}
+
+.reminder-row-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color var(--transition-fast);
+}
+
+.reminder-row-item:last-child {
+  border-bottom: none;
+}
+
+.reminder-row-item:hover {
+  background-color: #FAF9F6;
+}
+
+.rem-toggle-btn {
+  color: var(--border-strong);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.rem-toggle-btn.completed {
+  color: var(--accent-green);
+}
+
+.rem-time-col {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 110px;
+}
+
+.clock-icon {
+  color: var(--text-muted);
+}
+
+.time-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.rem-content-col {
+  flex: 1;
+}
+
+.rem-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+
+.rem-cat-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.rem-cat-tag.medication { background-color: var(--accent-warm-light); color: var(--accent-warm); }
+.rem-cat-tag.meal { background-color: var(--accent-green-light); color: var(--accent-green); }
+.rem-cat-tag.activity { background-color: var(--accent-yellow-light); color: #8C6239; }
+.rem-cat-tag.wellness { background-color: #EDF2F7; color: #4A5568; }
+
+.rem-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rem-title.done-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.rem-notes {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.rem-actions-col {
+  flex-shrink: 0;
+}
+
+.rem-modal-card {
+  background-color: var(--surface-primary);
+  border-radius: var(--radius-xl);
+  max-width: 500px;
+  width: 100%;
+  padding: 28px;
+  box-shadow: var(--shadow-lifted);
+}
+
+.rem-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

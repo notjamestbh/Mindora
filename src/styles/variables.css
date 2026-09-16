@@ -1,0 +1,103 @@
+:root {
+  /* Restrained, warm, natural palette */
+  --bg-primary: #F7F6F2;
+  --surface-primary: #FFFFFF;
+  --surface-muted: #EFEEE9;
+  --surface-hover: #E9E7E0;
+  
+  --text-primary: #171717;
+  --text-secondary: #626262;
+  --text-muted: #8A8882;
+  --border-subtle: #E5E2DC;
+  --border-strong: #CEC9BF;
+
+  /* Restrained Accents */
+  --accent-green: #667A63;
+  --accent-green-hover: #556752;
+  --accent-green-light: #EEF3ED;
+  --accent-warm: #B8785C;
+  --accent-warm-hover: #A0644A;
+  --accent-warm-light: #FBF2EE;
+  --accent-yellow: #D6B96C;
+  --accent-yellow-light: #FBF7EC;
+
+  /* Focus & Indicators */
+  --focus-ring: rgba(102, 122, 99, 0.4);
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.03);
+  --shadow-lifted: 0 12px 32px rgba(0, 0, 0, 0.06);
+
+  /* Geometry */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 9999px;
+
+  /* Sizing & Touch Targets */
+  --min-touch-target: 48px;
+  --header-height: 64px;
+  --bottom-nav-height: 72px;
+  --sidebar-width: 260px;
+
+  /* Font scale base */
+  --font-base: 16px;
+  --font-patient-base: 18px;
+  --font-patient-heading: 26px;
+  --font-patient-hero: 34px;
+
+  /* Transitions */
+  --ease-natural: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 150ms var(--ease-natural);
+  --transition-normal: 250ms var(--ease-natural);
+}
+
+/* Accessible text size modes */
+html[data-text-size="small"] {
+  --font-base: 14px;
+  --font-patient-base: 16px;
+  --font-patient-heading: 22px;
+  --font-patient-hero: 28px;
+}
+
+html[data-text-size="normal"] {
+  --font-base: 16px;
+  --font-patient-base: 18px;
+  --font-patient-heading: 26px;
+  --font-patient-hero: 34px;
+}
+
+html[data-text-size="large"] {
+  --font-base: 18px;
+  --font-patient-base: 21px;
+  --font-patient-heading: 30px;
+  --font-patient-hero: 40px;
+}
+
+html[data-text-size="xlarge"] {
+  --font-base: 20px;
+  --font-patient-base: 24px;
+  --font-patient-heading: 34px;
+  --font-patient-hero: 46px;
+}
+
+/* High Contrast Mode */
+html[data-high-contrast="true"] {
+  --bg-primary: #FFFFFF;
+  --surface-primary: #FFFFFF;
+  --surface-muted: #F0EFEA;
+  --surface-hover: #E2E1DA;
+  --text-primary: #000000;
+  --text-secondary: #222222;
+  --text-muted: #444444;
+  --border-subtle: #000000;
+  --border-strong: #000000;
+  --accent-green: #3B5238;
+  --accent-warm: #8C4D34;
+  --shadow-subtle: 0 0 0 1px #000000;
+  --shadow-card: 0 0 0 2px #000000;
+}
+
+html[data-high-contrast="true"] body {
+  background-image: none !important;
+}
