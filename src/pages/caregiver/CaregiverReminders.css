@@ -128,6 +128,29 @@
 .rem-cat-tag.activity { background-color: var(--accent-yellow-light); color: #8C6239; }
 .rem-cat-tag.wellness { background-color: #EDF2F7; color: #4A5568; }
 
+.rem-freq-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #E8F0FE;
+  color: #1A73E8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.rem-dose-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #FEF7E0;
+  color: #B06000;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
 .rem-title {
   font-size: 1.05rem;
   font-weight: 600;
@@ -145,7 +168,48 @@
 }
 
 .rem-actions-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.edit-rem-btn {
+  background: none;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.edit-rem-btn:hover {
+  background-color: var(--surface-muted);
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+.delete-rem-btn {
+  background: none;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.delete-rem-btn:hover {
+  background-color: #FCE8E6;
+  color: #C5221F;
+  border-color: #FCE8E6;
 }
 
 .rem-modal-card {

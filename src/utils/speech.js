@@ -115,19 +115,25 @@ export const getAssistantResponse = (userQuery) => {
     return { text: `I couldn't find a memory for ${name} to remove.`, action: "/memory" };
   }
 
-  // 3. Add Reminder
-  const addReminderMatch = query.match(/(?:add reminder for|remind me to) (.+) at (.+)/i);
+  // 3. Add Reminder or Medicine
+  const addReminderMatch = query.match(/(?:add reminder for|remind me to|add medicine|add prescription) (.+) at (.+)/i);
   if (addReminderMatch) {
     const title = addReminderMatch[1].trim();
     const time = addReminderMatch[2].trim();
-    addReminder({
+    const isMed = title.includes('pill') || title.includes('medicine') || title.includes('tablet') || query.includes('medicine') || query.includes('prescription');
+    const newRem = {
       title: title.charAt(0).toUpperCase() + title.slice(1),
-      time: time.toUpperCase(), // basic am/pm capitalization
-      category: title.includes('pill') || title.includes('medicine') ? 'medication' : 'wellness',
+      time: time.toUpperCase(),
+      category: isMed ? 'medication' : 'wellness',
       notes: 'Added by voice request.'
-    });
+    };
+    if (isMed) {
+      newRem.frequency = 'Once daily';
+      newRem.dosage = '1 Tablet';
+    }
+    addReminder(newRem);
     return {
-      text: `I have added a reminder to ${title} at ${time}.`,
+      text: `I have added ${isMed ? 'medicine' : 'a reminder for'} ${title} scheduled for ${time}.`,
       action: "/today"
     };
   }
@@ -202,18 +208,45 @@ export const getAssistantResponse = (userQuery) => {
 
   // 2. Medicine / Pills
   if (query.includes('medicine') || query.includes('tablet') || query.includes('pill') || query.includes('dose')) {
-    const med = reminders.find(r => r.category === 'medication' && !r.completed);
-    if (med) {
+    const allMeds = reminders.filter(r => r.category === 'medication');
+    if (allMeds.length === 0) {
       return {
-        text: `Your upcoming medicine is scheduled for ${med.time}. Please have a glass of warm water ready.`,
-        action: "/today"
-      };
-    } else {
-      return {
-        text: "You have taken your scheduled morning medicine. Your evening tablet will be at 7:30 PM with warm milk.",
+        text: "You have no medicines scheduled for today. Rest comfortably and enjoy your day.",
         action: "/today"
       };
     }
+
+    const pendingMeds = allMeds.filter(r => !r.completed);
+    const takenMeds = allMeds.filter(r => r.completed);
+
+    if (pendingMeds.length === 0) {
+      const takenSummary = takenMeds.map(m => m.title).join(', ');
+      return {
+        text: `You have taken all your scheduled medicines for today (${takenSummary}). Well done!`,
+        action: "/today"
+      };
+    }
+
+    const nextMed = pendingMeds[0];
+    let details = `${nextMed.title} scheduled for ${nextMed.time}`;
+    if (nextMed.frequency) details += ` (${nextMed.frequency})`;
+    if (nextMed.dosage) details += `, dosage: ${nextMed.dosage}`;
+
+    let responseText = `Your upcoming medicine is ${details}.`;
+    if (nextMed.notes) {
+      responseText += ` Note: ${nextMed.notes}.`;
+    } else {
+      responseText += ` Please have a glass of warm water ready.`;
+    }
+
+    if (pendingMeds.length > 1) {
+      responseText += ` You also have ${pendingMeds.length - 1} more medicine scheduled later today.`;
+    }
+
+    return {
+      text: responseText,
+      action: "/today"
+    };
   }
 
   // 3. Dynamic Memory Lookup (Matches any Person, Place, Thing, or Moment in storage)

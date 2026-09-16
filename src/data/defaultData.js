@@ -184,6 +184,8 @@ export const initialReminders = [
     title: "Morning Blood Pressure Medicine",
     time: "09:00 AM",
     category: "medication",
+    frequency: "Once daily (Morning)",
+    dosage: "1 Tablet",
     completed: true,
     completedAt: "09:08 AM",
     notes: "Take with half glass warm water"
@@ -220,6 +222,8 @@ export const initialReminders = [
     title: "Evening Medicine & Warm Milk",
     time: "07:30 PM",
     category: "medication",
+    frequency: "Once daily (Night)",
+    dosage: "1 Tablet",
     completed: false,
     completedAt: null,
     notes: "Evening tablet after light supper"
