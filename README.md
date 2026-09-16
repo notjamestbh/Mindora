@@ -75,10 +75,6 @@ Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Mi
 1. Visit `/caregiver/activity` to view Amma's 7-day cognitive trend line, accuracy %, and response times.
 2. Adjust the **Adaptive Difficulty Engine** slider (*Gentle*, *Moderate*, or *Challenging*) to match her current focus levels.
 
-
-
----
-
 ### 2. Daily Routine for the Patient (Amma)
 
 * **Checking In & Taking Medicines**:
@@ -88,9 +84,6 @@ Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Mi
 * When a pill is taken, tap the large **Mark Taken** button (switches to a soothing green **Taken** state).
 * Tap **Start Activity** on routine cards (e.g., walks, tea, rest) to follow daily habits.
 
-
-
-
 * **Talking with TalkBot (Voice Assistant)**:
 1. Tap the **Floating Microphone** icon in the bottom corner of any page (or go to `/talk`).
 2. Speak naturally:
@@ -98,20 +91,11 @@ Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Mi
 * *"Remind me to drink water at 4 PM"* → TalkBot schedules the reminder directly into the routine.
 * *"How did I do in my games today?"* → TalkBot offers an encouraging audio summary of recent activity.
 
-
-
-
 * **Playing Cognitive Games**:
 1. Navigate to `/play` and choose a game:
 * **Who’s Speaking?**: Tap the audio button to hear a family member's voice, then tap their portrait to identify them.
 * **Who Is This?**: Look at the family portrait and select the matching name using the helpful relationship hints.
 * **Memory Match**: Tap cards to find matching pairs of culturally familiar items like Sewali flowers, prayer bells, and tea kettles.
-
-
-
-
-
----
 
 ## 🛠️ Tech Stack
 
@@ -119,7 +103,3 @@ Dementia care often lacks tools that feel warm, familiar, and non-clinical. **Mi
 * **Speech Engine**: Native Web Speech API (`SpeechRecognition` & `SpeechSynthesis`)
 * **State Management**: Reactive local client store via `storage.js`
 * **Audio System**: Soft ambient feedback and chime cues via `sound.js`
-
-```
-
-```
